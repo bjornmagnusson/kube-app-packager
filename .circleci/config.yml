@@ -16,10 +16,16 @@ jobs:
           name: Build Docker image
           command: |
             docker-compose build
+            if [[ ! -z "${CIRCLE_TAG}" ]]; then
+              TAG=${CIRCLE_TAG} docker-compose build
+            fi
       - deploy:
           name: Push Docker image to Docker Hub
           command: |
             if [ "${CIRCLE_BRANCH}" == "master" ]; then
               docker login -u $DOCKER_USER -p $DOCKER_PASS
               docker-compose push
+              if [[ ! -z "${CIRCLE_TAG}" ]]; then
+                TAG=${CIRCLE_TAG} docker-compose push
+              fi
             fi
