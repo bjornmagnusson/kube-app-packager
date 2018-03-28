@@ -1,10 +1,10 @@
 version: '2.1'
 
 services:
-    deployer:
-        image: bjornmagnusson/kube-app-packager:${TAG:-latest}
-        build:
-            context: .
-            dockerfile: Dockerfile
-            args:
-              HELM_VERSION: ${HELM_VERSION:-2.8.2}
+  packager:
+    image: bjornmagnusson/kube-app-packager:${TAG:-latest}
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        HELM_VERSION: ${HELM_VERSION:-2.8.2}
