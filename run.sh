@@ -7,15 +7,15 @@ fi
 echo "Packaging Kubernetes Application (chart = $HELM_CHART_NAME, chart version = $HELM_CHART_VERSION_FROM_ENV, image = $DOCKER_IMAGE)"
 cd /app
 
-DOCKER_IMAGES_TAR=images.tar
+DOCKER_IMAGE_TAR=image.tar
 
 # fetch docker image
 echo "Fetching Docker image $DOCKER_IMAGE"
 IMAGE=$DOCKER_IMAGE
 docker pull $DOCKER_IMAGE
-docker save --output $DOCKER_IMAGES_TAR $DOCKER_IMAGE
-if [[ ! -f $DOCKER_IMAGES_TAR ]]; then
-  echo "Failed to save $DOCKER_IMAGE to $DOCKER_IMAGES_TAR"
+docker save --output $DOCKER_IMAGE_TAR $DOCKER_IMAGE
+if [[ ! -f $DOCKER_IMAGE_TAR ]]; then
+  echo "Failed to save $DOCKER_IMAGE to $DOCKER_IMAGE_TAR"
 fi
 
 # fetch helm chart
@@ -32,10 +32,11 @@ if [[ $HELM_CHART_VERSION_FROM_ENV != "N/A" ]]; then
 else
   HELM_CHART_TAR="$HELM_CHART_TAR-*"
 fi
-HELM_CHART_TAR="$HELM_CHART_TAR.tgz"
-APPLICATION_TAR=$APPLICATION_NAME.tar
-echo "Bundling Helm Chart and Docker images into $APPLICATION_TAR"
-tar -cf $APPLICATION_TAR $DOCKER_IMAGES_TAR $HELM_CHART_TAR
+HELM_CHART_TAR=$HELM_CHART_TAR.tgz
+APPLICATION_TAR=$APPLICATION_NAME.tgz
+echo "Bundling Helm Chart and Docker image into $APPLICATION_TAR"
+tar -zcf $APPLICATION_TAR $DOCKER_IMAGE_TAR $HELM_CHART_TAR
+rm $DOCKER_IMAGE_TAR $HELM_CHART_TAR
 
 ls $APPLICATION_TAR
 tar -tvf $APPLICATION_TAR
