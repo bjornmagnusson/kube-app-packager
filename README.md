@@ -7,8 +7,11 @@ Done by packaging a Helm Chart together with docker images into tarball
 Environment Variables
 ===========
 - HELM_CHART_NAME: Helm chart name
+- HELM_CHART_REPOSITORY: Helm repository to use
+- HELM_CHART_VERSION: Helm Chart version
 - DOCKER_IMAGE: Docker image used in Helm Chart
-- VERSION: version of Helm chart
+- APP_VERSION: Version of application to be built
+- APP_NAME: Name of application to be built
 
 Usage
 ===========
@@ -24,9 +27,12 @@ services:
     volumes:
       - ./:/helm
     environment:
-      HELM_CHART_NAME: "chart"
-      DOCKER_IMAGE: "chart"     
-      VERSION: "1.2.3"
+    DOCKER_IMAGE: mariadb:10.1.31
+    HELM_CHART_REPOSITORY: stable
+    HELM_CHART_NAME: mariadb
+    HELM_CHART_VERSION: 2.1.17
+    APP_VERSION: 0.0.1-SNAPSHOT
+    APP_NAME: "mariadb"
 ```
 
-Package application by running `docker-compose -f docker-compose.package.yml up`
+Package application by running `docker-compose -f docker-compose.package.yml up --abort-on-container-exit`
