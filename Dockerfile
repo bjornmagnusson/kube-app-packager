@@ -1,4 +1,4 @@
-FROM docker:18.03-dind
+FROM docker:18.03
 ARG HELM_VERSION=2.8.2
 RUN apk add dos2unix --update-cache --repository http://dl-3.alpinelinux.org/alpine/edge/community/ --allow-untrusted && \
     apk add --no-cache bash dos2unix && \

@@ -2,7 +2,7 @@ version: '2.1'
 
 services:
   package:
-    image: bjornmagnusson/kube-app-packager:${HELM_VERSION:-latest}
+    image: bjornmagnusson/kube-app-packager
     volumes:
       - ./:/app
     environment:
@@ -18,5 +18,3 @@ services:
   docker:
     image: docker:18.03-dind
     privileged: true
-    volumes:
-    - /sys/fs/cgroup:/sys/fs/cgroup:ro
