@@ -16,8 +16,10 @@ jobs:
           name: Build Docker image
           command: |
             docker-compose build
-      - run:
+      - deploy:
           name: Push Docker image to Docker Hub
           command: |
-            docker login -u $DOCKER_USER -p $DOCKER_PASS
-            docker-compose push
+            if [ "${CIRCLE_BRANCH}" == "master" ]; then
+              docker login -u $DOCKER_USER -p $DOCKER_PASS
+              docker-compose push
+            fi
