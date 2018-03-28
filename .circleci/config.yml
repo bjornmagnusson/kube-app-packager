@@ -3,6 +3,7 @@ jobs:
   build:
     filters:
       tags:
+        only: /.*/
     docker:
       - image: circleci/ruby:2.4.1
     steps:
