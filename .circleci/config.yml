@@ -25,9 +25,10 @@ jobs:
             if [ "${CIRCLE_BRANCH}" == "master" ]; then
               docker login -u $DOCKER_USER -p $DOCKER_PASS
               docker-compose push
-              if [[ ! -z "${CIRCLE_TAG}" ]]; then
-                TAG=${CIRCLE_TAG} docker-compose push
-              fi
+            fi
+            if [[ ! -z "${CIRCLE_TAG}" ]]; then
+              docker login -u $DOCKER_USER -p $DOCKER_PASS
+              TAG=${CIRCLE_TAG} docker-compose push
             fi
 
 workflows:
