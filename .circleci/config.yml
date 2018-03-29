@@ -2,7 +2,7 @@ version: 2
 jobs:
   build:
     docker:
-      - image: circleci/ruby:2.4.1
+      - image: docker:18.03.0-ce-git
     steps:
       - checkout
       - run:
@@ -23,7 +23,7 @@ jobs:
           name: Test examples
           command: |
             docker-compose -f examples/multiple_images/docker-compose.package.yml up --abort-on-container-exit
-            docker-compose -f examples/single_image/docker-compose.package.yml up --abort-on-container-exit          
+            docker-compose -f examples/single_image/docker-compose.package.yml up --abort-on-container-exit
       - deploy:
           name: Push Docker image to Docker Hub
           command: |
