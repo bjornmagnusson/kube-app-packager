@@ -19,6 +19,11 @@ jobs:
             if [[ ! -z "${CIRCLE_TAG}" ]]; then
               TAG=${CIRCLE_TAG} docker-compose build
             fi
+      - run:
+          name: Test examples
+          command: |
+            docker-compose -f examples/multiple_images/docker-compose.package.yml up --abort-on-container-exit
+            docker-compose -f examples/single_image/docker-compose.package.yml up --abort-on-container-exit          
       - deploy:
           name: Push Docker image to Docker Hub
           command: |
