@@ -1,7 +1,7 @@
 MariaDB example
 ======
 
-This example will package Docker image `mariadb:10.1.31`
+This example will package Docker images `mariadb:10.1.31` and `prom/mysqld-exporter:v0.10.0`
 and Helm Chart `stable/mariadb` with version `2.1.17`
 into an tarball named `mariadb-0.0.1-SNAPSHOT.tar`.
 
