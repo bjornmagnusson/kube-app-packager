@@ -1,5 +1,7 @@
-kube-app-packager
-===========
+# kube-app-packager
+
+
+[![CircleCI](https://circleci.com/gh/bjornmagnusson/kube-app-packager/tree/master.svg?style=svg)](https://circleci.com/gh/bjornmagnusson/kube-app-packager/tree/master)
 
 kube-app-packager is responsible for packaging an Kubernetes Application in an shippable format.
 Done by packaging a Helm Chart together with used Docker images into tarball
@@ -7,13 +9,11 @@ Application tarball will be available in the current directory
 
 By default, only stable Helm repository is enabled.
 
-Requirements
-=======
+## Requirements
 - Docker
 - Docker Compose
 
-Environment Variables
-===========
+## Environment Variables
 - HELM_CHART_REPOSITORY: Helm repository to use
 - HELM_CHART_NAME: Helm chart name
 - HELM_CHART_VERSION: Helm Chart version
@@ -21,8 +21,7 @@ Environment Variables
 - APP_NAME: Name of application to be built
 - APP_VERSION: Version of application to be built
 
-Usage
-===========
+## Usage
 Example on how to use is available in examples/ folder.
 
 Add compose file to use for packaging (docker-compose.package.yml):
