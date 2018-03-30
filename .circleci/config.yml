@@ -24,6 +24,8 @@ jobs:
           command: |
             mkdir docker-cert
             cp ${DOCKER_CERT_PATH}/* docker-cert/
+            pwd
+            ls -al
             ls -al docker-cert
             for dir in $(ls -d examples/*); do
               echo "Testing $dir"
