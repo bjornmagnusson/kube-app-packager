@@ -6,7 +6,6 @@ if [[ $HELM_CHART_VERSION_FROM_ENV != "N/A" ]]; then
 fi
 echo "Packaging Kubernetes Application (chart = $HELM_CHART_NAME, chart version = $HELM_CHART_VERSION_FROM_ENV, images = $DOCKER_IMAGES)"
 cd /tmp
-
 DOCKER_IMAGES_TAR=images.tar
 
 # fetch docker image
