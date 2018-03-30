@@ -22,10 +22,10 @@ jobs:
       - run:
           name: Test examples
           command: |
+            mkdir -p docker-cert
+            cp ${DOCKER_CERT_PATH}/* docker-cert/
             for dir in $(ls -d examples/*); do
               echo "Testing $dir"
-              mkdir -p docker-cert
-              cp ${DOCKER_CERT_PATH}/* ${CIRCLE_WORKING_DIRECTORY}/$dir/docker-cert/
 
               # creating dummy container which will hold a volume with config
               docker create -v /cfg --name configs alpine:3.4 /bin/true
