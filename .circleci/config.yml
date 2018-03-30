@@ -22,9 +22,11 @@ jobs:
       - run:
           name: Test examples
           command: |
+            mkdir docker-cert
+            cp ${DOCKER_CERT_PATH}/* docker-cert/
             for dir in $(ls -d examples/*); do
               echo "Testing $dir"
-              docker-compose -f $dir/docker-compose.package.yml up --abort-on-container-exit
+              DOCKER_HOST=${DOCKER_HOST} DOCKER_CERT_PATH=${DOCKER_CERT_PATH} DOCKER_TLS_VERIFY=${DOCKER_TLS_VERIFY} docker-compose -f $dir/docker-compose.package.yml up --abort-on-container-exit
             done
       - deploy:
           name: Push Docker image to Docker Hub
