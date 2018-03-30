@@ -1,6 +1,7 @@
 #!/bin/bash
 
 test() {
+  echo "Env: $APP_ENV"
   docker run --volumes-from configs $1 --env DOCKER_HOST=${DOCKER_HOST} --env DOCKER_TLS_VERIFY=${DOCKER_TLS_VERIFY} --env DOCKER_CERT_PATH=/cfg bjornmagnusson/kube-app-packager
 }
 
