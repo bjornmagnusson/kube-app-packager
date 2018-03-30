@@ -22,13 +22,10 @@ jobs:
       - run:
           name: Test examples
           command: |
-            mkdir docker-cert
-            cp ${DOCKER_CERT_PATH}/* docker-cert/
-            pwd
-            ls -al
-            ls -al docker-cert
             for dir in $(ls -d examples/*); do
               echo "Testing $dir"
+              mkdir $dir/docker-cert
+              cp ${DOCKER_CERT_PATH}/* $dir/docker-cert/
               DOCKER_HOST=${DOCKER_HOST} CERT_PATH=/app/docker-cert DOCKER_TLS_VERIFY=${DOCKER_TLS_VERIFY} docker-compose -f $dir/docker-compose.package.yml up --abort-on-container-exit
             done
       - deploy:
