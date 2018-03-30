@@ -5,7 +5,7 @@ if [[ $HELM_CHART_VERSION_FROM_ENV != "N/A" ]]; then
   HELM_CHART_VERSION_COMMAND="--version $HELM_CHART_VERSION_FROM_ENV"
 fi
 echo "Packaging Kubernetes Application (chart = $HELM_CHART_NAME, chart version = $HELM_CHART_VERSION_FROM_ENV, images = $DOCKER_IMAGES)"
-cd /app
+cd /tmp
 
 DOCKER_IMAGES_TAR=images.tar
 
@@ -37,11 +37,18 @@ else
   HELM_CHART_TAR="$HELM_CHART_TAR-*"
 fi
 HELM_CHART_TAR=$HELM_CHART_TAR.tgz
-APPLICATION_TAR=$APPLICATION_NAME.tgz
+APPLICATION_TAR="/app/$APPLICATION_NAME.tgz"
 echo "Bundling Helm Chart and Docker image into $APPLICATION_TAR"
 tar -zcf $APPLICATION_TAR $DOCKER_IMAGES_TAR $HELM_CHART_TAR
 rm $DOCKER_IMAGES_TAR $HELM_CHART_TAR
 
 ls $APPLICATION_TAR
+if [[ $? != "0" ]]; then
+  echo "Failed to find $APPLICATION_TAR"
+  exit 1
+fi
 tar -tvf $APPLICATION_TAR
+if [[ $? != "0" ]]; then
+  echo "Failed to open $APPLICATION_TAR"
+fi
 echo "Successfully packaged application $APPLICATION_NAME into $APPLICATION_TAR"
