@@ -24,11 +24,18 @@ jobs:
           command: |
             for dir in $(ls -d examples/*); do
               echo "Testing $dir"
-              mkdir -p ${CIRCLE_WORKING_DIRECTORY}/$dir/docker-cert
+              mkdir -p docker-cert
               cp ${DOCKER_CERT_PATH}/* ${CIRCLE_WORKING_DIRECTORY}/$dir/docker-cert/
-              ls -al ${CIRCLE_WORKING_DIRECTORY}/$dir/docker-cert
-              DOCKER_HOST=${DOCKER_HOST} CERT_PATH=/app/docker-cert DOCKER_TLS_VERIFY=${DOCKER_TLS_VERIFY} docker-compose -f $dir/docker-compose.package.yml config
-              DOCKER_HOST=${DOCKER_HOST} CERT_PATH=/app/docker-cert DOCKER_TLS_VERIFY=${DOCKER_TLS_VERIFY} docker-compose -f $dir/docker-compose.package.yml up --abort-on-container-exit
+
+              # creating dummy container which will hold a volume with config
+              docker create -v /cfg --name configs alpine:3.4 /bin/true
+              # copying config file into this volume
+              docker cp docker-cert/* configs:/cfg
+              # starting application container using this volume
+              docker run --volumes-from configs --env DOCKER_IMAGES="mariadb:10.1.31,prom/mysqld-exporter:v0.10.0" --env HELM_CHART_REPOSITORY=stable --env HELM_CHART_NAME=mariadb --env HELM_CHART_VERSION="2.1.17" --env APP_VERSION="0.0.1-SNAPSHOT" --env APP_NAME="mariadb" --env DOCKER_HOST=${DOCKER_HOST:-tcp://docker:2375} --env DOCKER_TLS_VERIFY=${DOCKER_TLS_VERIFY:-} --env DOCKER_CERT_PATH=${CERT_PATH:-} bjornmagnusson/kube-app-packager
+
+              DOCKER_HOST=${DOCKER_HOST} CERT_PATH=/cfg DOCKER_TLS_VERIFY=${DOCKER_TLS_VERIFY} docker-compose -f $dir/docker-compose.package.yml config
+              DOCKER_HOST=${DOCKER_HOST} CERT_PATH=/cfg DOCKER_TLS_VERIFY=${DOCKER_TLS_VERIFY} docker-compose -f $dir/docker-compose.package.yml up --abort-on-container-exit
             done
       - deploy:
           name: Push Docker image to Docker Hub
