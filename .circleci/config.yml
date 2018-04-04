@@ -22,7 +22,7 @@ jobs:
       - run:
           name: Test examples
           command: |
-            .circleci/test.sh
+            .circleci/test.sh ${CIRCLE_WORKING_DIRECTORY}
       - deploy:
           name: Push Docker image to Docker Hub
           command: |
