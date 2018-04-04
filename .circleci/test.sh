@@ -4,7 +4,12 @@ docker cp ${DOCKER_CERT_PATH}/ca.pem configs:/cfg
 docker cp ${DOCKER_CERT_PATH}/cert.pem configs:/cfg
 docker cp ${DOCKER_CERT_PATH}/key.pem configs:/cfg
 
-for test_file in "$1/test/test_multi_image" "$1/test/test_single_image" "$1/test/test_single_same_name"; do
+TEST_FILES=$1/test/*
+for test_file in $TEST_FILES; do
+  echo "Found test file $test_file"
+done
+
+for test_file in $TEST_FILES; do
   echo "Testing $test_file"
   APP_ENV=""
   while read env_var; do
