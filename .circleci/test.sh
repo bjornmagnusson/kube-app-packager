@@ -6,12 +6,11 @@ docker cp ${DOCKER_CERT_PATH}/key.pem configs:/cfg
 
 APP_ENV_CONCAT=""
 cat $1/test/test_multi_image
-cat $1/test/test_multi_image | while read env_var
-do
+while read env_var; do
    echo "Found env $env_var"
    APP_ENV_CONCAT="$APP_ENV_CONCAT --env $env_var"
-   echo "New APP_ENV_CONCAT: $APP_ENV_CONCAT"
-done
+   echo $APP_ENV_CONCAT
+done <<<$(cat $1/test/test_multi_image)
 echo "APP_ENV_CONCAT: $APP_ENV_CONCAT"
 APP_ENV1="$APP_ENV_CONCAT"
 APP_ENV2="--env DOCKER_IMAGES=mariadb:10.1.31 --env HELM_CHART_REPOSITORY=stable --env HELM_CHART_NAME=mariadb --env HELM_CHART_VERSION=2.1.17 --env APP_VERSION=0.0.1-SNAPSHOT --env APP_NAME=mariadb"
