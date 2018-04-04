@@ -25,6 +25,10 @@ fi
 echo "Fetching Helm Chart $HELM_CHART_NAME-$HELM_CHART_VERSION_FROM_ENV"
 helm repo update
 helm fetch $HELM_CHART_REPOSITORY/$HELM_CHART_NAME $HELM_CHART_VERSION_COMMAND
+if [[ $? != "0" ]]; then
+  echo "Failed to fetch Helm Chart $HELM_CHART_NAME-$HELM_CHART_VERSION_FROM_ENV"
+  exit 1
+fi
 
 # package application (docker images + helm chart = app tarball)
 APPLICATION_NAME=$APP_NAME
