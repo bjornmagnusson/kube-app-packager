@@ -10,7 +10,13 @@ APP_ENV3="--env DOCKER_IMAGES=mariadb:10.1.31 --env HELM_CHART_REPOSITORY=stable
 
 for APP_ENV in "$APP_ENV1" "$APP_ENV2" "$APP_ENV3"; do
   echo "Testing $APP_ENV"
-  docker run --volumes-from configs $APP_ENV --env DOCKER_HOST=${DOCKER_HOST} --env DOCKER_TLS_VERIFY=${DOCKER_TLS_VERIFY} --env DOCKER_CERT_PATH=/cfg bjornmagnusson/kube-app-packager
+  docker run \
+    --volumes-from configs \
+    $APP_ENV \
+    --env DOCKER_HOST=${DOCKER_HOST} \
+    --env DOCKER_TLS_VERIFY=${DOCKER_TLS_VERIFY} \
+    --env DOCKER_CERT_PATH=/cfg \
+  bjornmagnusson/kube-app-packager
   if [[ $? != "0" ]]; then
     echo "Test failed for $APP_ENV"
     exit 1
