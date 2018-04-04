@@ -4,7 +4,12 @@ docker cp ${DOCKER_CERT_PATH}/ca.pem configs:/cfg
 docker cp ${DOCKER_CERT_PATH}/cert.pem configs:/cfg
 docker cp ${DOCKER_CERT_PATH}/key.pem configs:/cfg
 
-APP_ENV1="--env DOCKER_IMAGES=mariadb:10.1.31,prom/mysqld-exporter:v0.10.0 --env HELM_CHART_REPOSITORY=stable --env HELM_CHART_NAME=mariadb --env HELM_CHART_VERSION=2.1.17 --env APP_VERSION=0.0.1-SNAPSHOT --env APP_NAME=mariadb"
+APP_ENV_CONCAT=""
+for env_vars in "DOCKER_IMAGES=mariadb:10.1.31,prom/mysqld-exporter:v0.10.0" "HELM_CHART_REPOSITORY=stable" "HELM_CHART_NAME=mariadb" "HELM_CHART_VERSION=2.1.17" "APP_VERSION=0.0.1-SNAPSHOT" "APP_NAME=mariadb"; do
+  $APP_ENV_CONCAT="$APP_ENV_CONCAT --env $env_vars"
+done
+echo "APP_ENV_CONCAT: $APP_ENV_CONCAT"
+APP_ENV1="$APP_ENV_CONCAT"
 APP_ENV2="--env DOCKER_IMAGES=mariadb:10.1.31 --env HELM_CHART_REPOSITORY=stable --env HELM_CHART_NAME=mariadb --env HELM_CHART_VERSION=2.1.17 --env APP_VERSION=0.0.1-SNAPSHOT --env APP_NAME=mariadb"
 APP_ENV3="--env DOCKER_IMAGES=mariadb:10.1.31 --env HELM_CHART_REPOSITORY=stable --env HELM_CHART_NAME=mariadb --env HELM_CHART_VERSION=2.1.17 --env APP_VERSION=2.1.17 --env APP_NAME=mariadb"
 
