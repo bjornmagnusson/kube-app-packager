@@ -5,6 +5,7 @@ docker cp ${DOCKER_CERT_PATH}/cert.pem configs:/cfg
 docker cp ${DOCKER_CERT_PATH}/key.pem configs:/cfg
 
 APP_ENV_CONCAT=""
+ls -al $1/.circleci
 cat $1/.circleci/test_multi_image | while read env_var
 do
    APP_ENV_CONCAT="$APP_ENV_CONCAT --env $env_var"
