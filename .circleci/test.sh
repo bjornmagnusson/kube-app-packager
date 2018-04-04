@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 test () {
   echo "Testing $1"
