@@ -11,7 +11,7 @@ docker cp ${DOCKER_CERT_PATH}/ca.pem configs:/cfg
 docker cp ${DOCKER_CERT_PATH}/cert.pem configs:/cfg
 docker cp ${DOCKER_CERT_PATH}/key.pem configs:/cfg
 
-APP_ENV="--env\" DOCKER_IMAGES=mariadb:10.1.31,prom/mysqld-exporter:v0.10.0 --env HELM_CHART_REPOSITORY=stable --env HELM_CHART_NAME=mariadb --env HELM_CHART_VERSION=2.1.17 --env APP_VERSION=0.0.1-SNAPSHOT --env APP_NAME=mariadb"
+APP_ENV="--env DOCKER_IMAGES=mariadb:10.1.31,prom/mysqld-exporter:v0.10.0 --env HELM_CHART_REPOSITORY=stable --env HELM_CHART_NAME=mariadb --env HELM_CHART_VERSION=2.1.17 --env APP_VERSION=0.0.1-SNAPSHOT --env APP_NAME=mariadb"
 EXIT_CODE=$(test "$APP_ENV")
 if [[ $EXIT_CODE != "0" ]]; then
   echo "Test failed for $APP_ENV"
