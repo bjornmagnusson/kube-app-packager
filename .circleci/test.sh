@@ -16,7 +16,7 @@ APP_ENV2="--env DOCKER_IMAGES=mariadb:10.1.31,prom/mysqld-exporter:v0.10.0 --env
 APP_ENV3="--env DOCKER_IMAGES=mariadb:10.1.31,prom/mysqld-exporter:v0.10.0 --env HELM_CHART_REPOSITORY=stable --env HELM_CHART_NAME=mariadb --env HELM_CHART_VERSION=2.1.17 --env APP_VERSION=0.0.1-SNAPSHOT --env APP_NAME=mariadb"
 for app_env in "$APP_ENV1" "$APP_ENV2" "$APP_ENV3"; do
   echo "Testing $app_env"
-  docker run --volumes-from configs $1 --env DOCKER_HOST=${DOCKER_HOST} --env DOCKER_TLS_VERIFY=${DOCKER_TLS_VERIFY} --env DOCKER_CERT_PATH=/cfg bjornmagnusson/kube-app-packager
+  docker run --volumes-from configs $app_env --env DOCKER_HOST=${DOCKER_HOST} --env DOCKER_TLS_VERIFY=${DOCKER_TLS_VERIFY} --env DOCKER_CERT_PATH=/cfg bjornmagnusson/kube-app-packager
   if [[ $? != "0" ]]; then
     echo "Test failed for $APP_ENV"
     exit 1
