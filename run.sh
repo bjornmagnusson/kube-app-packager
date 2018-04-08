@@ -41,7 +41,7 @@ else
 fi
 HELM_CHART_TAR=$HELM_CHART_TAR.tgz
 APPLICATION_TAR="/app/$APPLICATION_NAME.tgz"
-echo "Bundling Helm Chart and Docker image into $APPLICATION_TAR"
+echo "Bundling Helm Chart and Docker images into $APPLICATION_TAR"
 tar -zcf $APPLICATION_TAR $DOCKER_IMAGES_TAR $HELM_CHART_TAR
 rm $DOCKER_IMAGES_TAR $HELM_CHART_TAR
 
@@ -49,9 +49,5 @@ ls $APPLICATION_TAR
 if [[ $? != "0" ]]; then
   echo "Failed to find $APPLICATION_TAR"
   exit 1
-fi
-tar -tvf $APPLICATION_TAR
-if [[ $? != "0" ]]; then
-  echo "Failed to open $APPLICATION_TAR"
 fi
 echo "Successfully packaged application $APPLICATION_NAME into $APPLICATION_TAR"
