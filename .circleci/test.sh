@@ -17,16 +17,33 @@ for test_file in $TEST_FILES; do
      APP_ENV="$APP_ENV --env $env_var"
   done < $test_file
 
+  docker create -v /app --name app alpine:3.7 /bin/true
   docker run \
     --volumes-from configs \
     $APP_ENV \
     --env DOCKER_HOST=${DOCKER_HOST} \
     --env DOCKER_TLS_VERIFY=${DOCKER_TLS_VERIFY} \
     --env DOCKER_CERT_PATH=/cfg \
+    --volumes-from app \
+    --name $(basename $test_file) \
   bjornmagnusson/kube-app-packager
 
   if [[ $? != "0" ]]; then
     echo "Test failed for $test_file"
     exit 1
   fi
+
+  APP_PACKAGE_CONTAINER=$(basename $test_file)
+  APP_NAME=$(docker inspect --format="{{range .Config.Env}}{{println .}}{{end}}" $APP_PACKAGE_CONTAINER | grep APP_NAME | cut -d= -f2)
+  APP_VERSION=$(docker inspect --format="{{range .Config.Env}}{{println .}}{{end}}" $APP_PACKAGE_CONTAINER | grep APP_VERSION | cut -d= -f2)
+  APP_PACKAGE="$APP_NAME-$APP_VERSION.tgz"
+  docker cp app:/app/$APP_PACKAGE $1
+  ls $1
+  ls $1/$APP_PACKAGE
+  if [[ $? != "0" ]]; then
+    echo "Test failed for $test_file"
+    exit 1
+  fi
+  git clean -f
+  docker rm app
 done
