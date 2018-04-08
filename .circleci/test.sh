@@ -32,7 +32,7 @@ for test_file in $TEST_FILES; do
     exit 1
   fi
 
-  docker cp app:/app/*.tgz $1
+  docker cp app:/app/mariadb-0.0.1-SNAPSHOT.tgz $1
   ls $1
   ls $1/*tgz
   if [[ $? != "0" ]]; then
