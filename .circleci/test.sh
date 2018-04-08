@@ -25,6 +25,7 @@ for test_file in $TEST_FILES; do
     --env DOCKER_TLS_VERIFY=${DOCKER_TLS_VERIFY} \
     --env DOCKER_CERT_PATH=/cfg \
     --volumes-from app \
+    --name $(basename $test_file)
   bjornmagnusson/kube-app-packager
 
   if [[ $? != "0" ]]; then
@@ -32,6 +33,7 @@ for test_file in $TEST_FILES; do
     exit 1
   fi
 
+  docker inspect $(basename $test_file)
   docker cp app:/app/mariadb-0.0.1-SNAPSHOT.tgz $1
   ls $1
   ls $1/*tgz
