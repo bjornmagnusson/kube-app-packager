@@ -19,6 +19,7 @@ for test_file in $TEST_FILES; do
 
   docker run \
     --volumes-from configs \
+    -v $1:/app
     $APP_ENV \
     --env DOCKER_HOST=${DOCKER_HOST} \
     --env DOCKER_TLS_VERIFY=${DOCKER_TLS_VERIFY} \
@@ -29,4 +30,12 @@ for test_file in $TEST_FILES; do
     echo "Test failed for $test_file"
     exit 1
   fi
+
+  ls $1
+  ls $1/*tgz
+  if [[ $? != "0" ]]; then
+    echo "Test failed for $test_file"
+    exit 1
+  fi
+  git clean -f
 done
