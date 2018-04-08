@@ -34,9 +34,12 @@ for test_file in $TEST_FILES; do
   fi
 
   docker inspect $(basename $test_file)
-  docker cp app:/app/mariadb-0.0.1-SNAPSHOT.tgz $1
+  APP_NAME=$(docker inspect --format="{{range .Config.Env}}{{println .}}{{end}}" multipleimages_package_1 | grep APP_NAME | cut -d= -f2)
+  APP_VERSION=$(docker inspect --format="{{range .Config.Env}}{{println .}}{{end}}" multipleimages_package_1 | grep APP_VERSION | cut -d= -f2)
+  APP_PACKAGE="$APP_NAME-$APP_VERSION.tgz"
+  docker cp app:/app/$APP_PACKAGE $1
   ls $1
-  ls $1/*tgz
+  ls $1/$APP_PACKAGE
   if [[ $? != "0" ]]; then
     echo "Test failed for $test_file"
     exit 1
