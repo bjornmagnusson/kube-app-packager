@@ -23,7 +23,7 @@ for test_file in $TEST_FILES; do
     --env DOCKER_HOST=${DOCKER_HOST} \
     --env DOCKER_TLS_VERIFY=${DOCKER_TLS_VERIFY} \
     --env DOCKER_CERT_PATH=/cfg \
-    -v $1:/app
+    -v $1:/app \
   bjornmagnusson/kube-app-packager
 
   if [[ $? != "0" ]]; then
