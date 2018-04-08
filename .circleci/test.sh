@@ -4,7 +4,6 @@ docker cp ${DOCKER_CERT_PATH}/ca.pem configs:/cfg
 docker cp ${DOCKER_CERT_PATH}/cert.pem configs:/cfg
 docker cp ${DOCKER_CERT_PATH}/key.pem configs:/cfg
 
-docker create -v /app --name app alpine:3.7 /bin/true
 TEST_FILES=$1/test/*
 for test_file in $TEST_FILES; do
   echo "Found test file $test_file"
@@ -18,6 +17,7 @@ for test_file in $TEST_FILES; do
      APP_ENV="$APP_ENV --env $env_var"
   done < $test_file
 
+  docker create -v /app --name app alpine:3.7 /bin/true
   docker run \
     --volumes-from configs \
     $APP_ENV \
@@ -25,7 +25,7 @@ for test_file in $TEST_FILES; do
     --env DOCKER_TLS_VERIFY=${DOCKER_TLS_VERIFY} \
     --env DOCKER_CERT_PATH=/cfg \
     --volumes-from app \
-    --name $(basename $test_file)
+    --name $(basename $test_file) \
   bjornmagnusson/kube-app-packager
 
   if [[ $? != "0" ]]; then
@@ -42,4 +42,5 @@ for test_file in $TEST_FILES; do
     exit 1
   fi
   git clean -f
+  docker rm app
 done
