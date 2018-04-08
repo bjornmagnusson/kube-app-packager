@@ -33,9 +33,9 @@ for test_file in $TEST_FILES; do
     exit 1
   fi
 
-  docker inspect $(basename $test_file)
-  APP_NAME=$(docker inspect --format="{{range .Config.Env}}{{println .}}{{end}}" multipleimages_package_1 | grep APP_NAME | cut -d= -f2)
-  APP_VERSION=$(docker inspect --format="{{range .Config.Env}}{{println .}}{{end}}" multipleimages_package_1 | grep APP_VERSION | cut -d= -f2)
+  APP_PACKAGE_CONTAINER=$(basename $test_file)
+  APP_NAME=$(docker inspect --format="{{range .Config.Env}}{{println .}}{{end}}" $APP_PACKAGE_CONTAINER | grep APP_NAME | cut -d= -f2)
+  APP_VERSION=$(docker inspect --format="{{range .Config.Env}}{{println .}}{{end}}" $APP_PACKAGE_CONTAINER | grep APP_VERSION | cut -d= -f2)
   APP_PACKAGE="$APP_NAME-$APP_VERSION.tgz"
   docker cp app:/app/$APP_PACKAGE $1
   ls $1
