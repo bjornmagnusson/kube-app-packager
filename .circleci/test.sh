@@ -57,6 +57,7 @@ for test_file in $TEST_FILES; do
   fi
 
   echo "Validating package content"
+  tar tf $1/$APP_PACKAGE
   mkdir $1/$APP_PACKAGE_CONTAINER
   echo "Unpacking package into $1/$APP_PACKAGE_CONTAINER"
   tar zxvf $1/$APP_PACKAGE -C $1/$APP_PACKAGE_CONTAINER
