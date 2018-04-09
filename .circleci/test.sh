@@ -15,6 +15,7 @@ for test_file in $TEST_FILES; do
     continue
   elif [[ ${test_file: -3} == ".sh" ]]; then
     echo "$test_file is shell script, skipping"
+    continue
   fi
   echo "Testing $test_file"
 
@@ -56,6 +57,7 @@ for test_file in $TEST_FILES; do
   mkdir $1/$APP_PACKAGE_CONTAINER
   tar zxvf $1/$APP_PACKAGE -C $1/$APP_PACKAGE_CONTAINER
   cd $1/$APP_PACKAGE_CONTAINER
+  SCRIPTS_ARR=$(echo "$SCRIPTS" | sed "s/,/ /g")
   for SCRIPT in $SCRIPTS_ARR; do
     echo "Validating $SCRIPT exist in package"
     ls $SCRIPT
@@ -64,6 +66,8 @@ for test_file in $TEST_FILES; do
       exit 1
     fi
   done
+
+  echo "Cleaning up"
   rm -rf $1/$APP_PACKAGE $1/$APP_PACKAGE_CONTAINER
   docker rm app
 done
