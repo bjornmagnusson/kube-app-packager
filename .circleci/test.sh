@@ -3,6 +3,9 @@ docker create -v /cfg --name configs alpine:3.7 /bin/true
 docker cp ${DOCKER_CERT_PATH}/ca.pem configs:/cfg
 docker cp ${DOCKER_CERT_PATH}/cert.pem configs:/cfg
 docker cp ${DOCKER_CERT_PATH}/key.pem configs:/cfg
+docker create -v /app --name scripts alpine:3.7 /bin/true
+docker cp scripts scripts:/app
+docker cp test_single_with_scripts_install.sh scripts:/app
 
 TEST_FILES=$1/test/*
 for test_file in $TEST_FILES; do
@@ -24,11 +27,6 @@ for test_file in $TEST_FILES; do
   done < $test_file
 
   docker create -v /app --name app alpine:3.7 /bin/true
-  SCRIPTS=$(docker inspect --format="{{range .Config.Env}}{{println .}}{{end}}" $APP_PACKAGE_CONTAINER | grep SCRIPTS | cut -d= -f2)
-  SCRIPTS_ARR=$(echo "$SCRIPTS" | sed "s/,/ /g")
-  for SCRIPT in $SCRIPTS_ARR; do
-    docker cp $SCRIPT app:/app
-  done
   APP_PACKAGE_CONTAINER=$(basename $test_file)
   docker run \
     --volumes-from configs \
@@ -37,6 +35,7 @@ for test_file in $TEST_FILES; do
     --env DOCKER_TLS_VERIFY=${DOCKER_TLS_VERIFY} \
     --env DOCKER_CERT_PATH=/cfg \
     --volumes-from app \
+    --volumes-from scripts \
     --name $APP_PACKAGE_CONTAINER \
   bjornmagnusson/kube-app-packager
 
