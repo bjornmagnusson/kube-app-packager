@@ -58,6 +58,7 @@ for test_file in $TEST_FILES; do
 
   echo "Validating package content"
   mkdir $1/$APP_PACKAGE_CONTAINER
+  echo "Unpacking package into $1/$APP_PACKAGE_CONTAINER"
   tar zxvf $1/$APP_PACKAGE -C $1/$APP_PACKAGE_CONTAINER
   cd $1/$APP_PACKAGE_CONTAINER
   SCRIPTS=$(docker inspect --format="{{range .Config.Env}}{{println .}}{{end}}" $APP_PACKAGE_CONTAINER | grep SCRIPTS | cut -d= -f2)
