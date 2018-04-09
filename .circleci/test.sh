@@ -59,6 +59,7 @@ for test_file in $TEST_FILES; do
   mkdir $1/$APP_PACKAGE_CONTAINER
   tar zxvf $1/$APP_PACKAGE -C $1/$APP_PACKAGE_CONTAINER
   cd $1/$APP_PACKAGE_CONTAINER
+  SCRIPTS=$(docker inspect --format="{{range .Config.Env}}{{println .}}{{end}}" $APP_PACKAGE_CONTAINER | grep SCRIPTS | cut -d= -f2)
   SCRIPTS_ARR=$(echo "$SCRIPTS" | sed "s/,/ /g")
   for SCRIPT in $SCRIPTS_ARR; do
     echo "Validating $SCRIPT exist in package"
