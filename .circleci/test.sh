@@ -24,6 +24,11 @@ for test_file in $TEST_FILES; do
   done < $test_file
 
   docker create -v /app --name app alpine:3.7 /bin/true
+  SCRIPTS=$(docker inspect --format="{{range .Config.Env}}{{println .}}{{end}}" $APP_PACKAGE_CONTAINER | grep SCRIPTS | cut -d= -f2)
+  SCRIPTS_ARR=$(echo "$SCRIPTS" | sed "s/,/ /g")
+  for SCRIPT in $SCRIPTS_ARR; do
+    docker cp $SCRIPT app:/app
+  done
   APP_PACKAGE_CONTAINER=$(basename $test_file)
   docker run \
     --volumes-from configs \
@@ -53,8 +58,6 @@ for test_file in $TEST_FILES; do
 
   mkdir $1/$APP_PACKAGE_CONTAINER
   tar zxvf $1/$APP_PACKAGE -C $1/$APP_PACKAGE_CONTAINER
-  SCRIPTS=$(docker inspect --format="{{range .Config.Env}}{{println .}}{{end}}" $APP_PACKAGE_CONTAINER | grep SCRIPTS | cut -d= -f2)
-  SCRIPTS_ARR=$(echo "$SCRIPTS" | sed "s/,/ /g")
   cd $1/$APP_PACKAGE_CONTAINER
   for SCRIPT in $SCRIPTS_ARR; do
     echo "Validating $SCRIPT exist in package"
