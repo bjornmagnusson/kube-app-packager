@@ -10,6 +10,10 @@ for test_file in $TEST_FILES; do
 done
 
 for test_file in $TEST_FILES; do
+  if [ -d "$test_file" ]; then
+    echo "$test_file is a directory, skipping"
+    continue
+  fi
   echo "Testing $test_file"
 
   APP_ENV=""
