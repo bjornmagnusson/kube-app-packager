@@ -9,7 +9,7 @@ cd /tmp
 DOCKER_IMAGES_TAR=images.tar
 
 # fetch docker image
-echo "Fetching Docker images $DOCKER_IMAGES"
+echo "Fetching Docker images ($DOCKER_IMAGES)"
 DOCKER_IMAGES_ARR=$(echo "$DOCKER_IMAGES" | sed "s/,/ /g")
 for DOCKER_IMAGE in $DOCKER_IMAGES_ARR; do
   echo "Fetching Docker image $DOCKER_IMAGE"
@@ -22,13 +22,22 @@ if [[ ! -f $DOCKER_IMAGES_TAR ]]; then
 fi
 
 # fetch helm chart
-echo "Fetching Helm Chart $HELM_CHART_NAME-$HELM_CHART_VERSION_FROM_ENV"
+echo "Fetching Helm Chart ($HELM_CHART_NAME-$HELM_CHART_VERSION_FROM_ENV)"
 helm repo update
 helm fetch $HELM_CHART_REPOSITORY/$HELM_CHART_NAME $HELM_CHART_VERSION_COMMAND
 if [[ $? != "0" ]]; then
   echo "Failed to fetch Helm Chart $HELM_CHART_NAME-$HELM_CHART_VERSION_FROM_ENV"
   exit 1
 fi
+
+# Scripts as array
+echo "Collecting scripts ($SCRIPTS)"
+SCRIPTS_ARR=$(echo "$SCRIPTS" | sed "s/,/ /g")
+SCRIPTS=""
+for SCRIPT in $SCRIPTS_ARR; do
+  SCRIPTS="$SCRIPTS $SCRIPT"
+  cp -r /app/$SCRIPT .
+done
 
 # package application (docker images + helm chart = app tarball)
 APPLICATION_NAME=$APP_NAME
@@ -41,8 +50,8 @@ else
 fi
 HELM_CHART_TAR=$HELM_CHART_TAR.tgz
 APPLICATION_TAR="/app/$APPLICATION_NAME.tgz"
-echo "Bundling Helm Chart and Docker images into $APPLICATION_TAR"
-tar -zcf $APPLICATION_TAR $DOCKER_IMAGES_TAR $HELM_CHART_TAR
+echo "Bundling Helm Chart, Docker images and scripts into $APPLICATION_TAR"
+tar -zcf $APPLICATION_TAR $DOCKER_IMAGES_TAR $HELM_CHART_TAR $SCRIPTS
 rm $DOCKER_IMAGES_TAR $HELM_CHART_TAR
 
 ls $APPLICATION_TAR

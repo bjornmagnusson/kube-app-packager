@@ -10,6 +10,13 @@ for test_file in $TEST_FILES; do
 done
 
 for test_file in $TEST_FILES; do
+  if [ -d "$test_file" ]; then
+    echo "$test_file is a directory, skipping"
+    continue
+  elif [[ ${test_file: -3} == ".sh" ]]; then
+    echo "$test_file is shell script, skipping"
+    continue
+  fi
   echo "Testing $test_file"
 
   APP_ENV=""
@@ -18,6 +25,10 @@ for test_file in $TEST_FILES; do
   done < $test_file
 
   docker create -v /app --name app alpine:3.7 /bin/true
+  if [[ ${test_file: -12} == "with_scripts" ]]; then
+    docker cp $1/test/scripts app:/app
+    docker cp $1/test/test_single_with_scripts_install.sh app:/app
+  fi
   APP_PACKAGE_CONTAINER=$(basename $test_file)
   docker run \
     --volumes-from configs \
@@ -44,6 +55,25 @@ for test_file in $TEST_FILES; do
     echo "Test failed for $test_file"
     exit 1
   fi
-  rm -f $1/$APP_PACKAGE
+
+  echo "Validating package content"
+  tar tf $1/$APP_PACKAGE
+  mkdir $1/$APP_PACKAGE_CONTAINER
+  echo "Unpacking package into $1/$APP_PACKAGE_CONTAINER"
+  tar zxvf $1/$APP_PACKAGE -C $1/$APP_PACKAGE_CONTAINER
+  cd $1/$APP_PACKAGE_CONTAINER
+  SCRIPTS=$(docker inspect --format="{{range .Config.Env}}{{println .}}{{end}}" $APP_PACKAGE_CONTAINER | grep SCRIPTS | cut -d= -f2)
+  SCRIPTS_ARR=$(echo "$SCRIPTS" | sed "s/,/ /g")
+  for SCRIPT in $SCRIPTS_ARR; do
+    echo "Validating $SCRIPT exist in package"
+    ls $SCRIPT
+    if [[ $? != "0" ]]; then
+      echo "Test failed for $test_file, failed to find $SCRIPT"
+      exit 1
+    fi
+  done
+
+  echo "Cleaning up"
+  rm -rf $1/$APP_PACKAGE $1/$APP_PACKAGE_CONTAINER
   docker rm app
 done
