@@ -64,6 +64,6 @@ for test_file in $TEST_FILES; do
       exit 1
     fi
   done
-  rm -f $1/$APP_PACKAGE $1/$APP_PACKAGE_CONTAINER
+  rm -rf $1/$APP_PACKAGE $1/$APP_PACKAGE_CONTAINER
   docker rm app
 done
