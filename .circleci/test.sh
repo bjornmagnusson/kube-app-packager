@@ -56,6 +56,7 @@ for test_file in $TEST_FILES; do
     exit 1
   fi
 
+  echo "Validating package content"
   mkdir $1/$APP_PACKAGE_CONTAINER
   tar zxvf $1/$APP_PACKAGE -C $1/$APP_PACKAGE_CONTAINER
   cd $1/$APP_PACKAGE_CONTAINER
