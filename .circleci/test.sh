@@ -26,8 +26,8 @@ for test_file in $TEST_FILES; do
 
   docker create -v /app --name app alpine:3.7 /bin/true
   if [[ ${test_file: -12} == "with_scripts" ]]; then
-    docker cp test/scripts app:/app
-    docker cp test/test_single_with_scripts_install.sh app:/app
+    docker cp $1/test/scripts app:/app
+    docker cp $1/test/test_single_with_scripts_install.sh app:/app
   fi
   APP_PACKAGE_CONTAINER=$(basename $test_file)
   docker run \
