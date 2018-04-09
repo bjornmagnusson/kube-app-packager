@@ -4,8 +4,8 @@ docker cp ${DOCKER_CERT_PATH}/ca.pem configs:/cfg
 docker cp ${DOCKER_CERT_PATH}/cert.pem configs:/cfg
 docker cp ${DOCKER_CERT_PATH}/key.pem configs:/cfg
 docker create -v /app --name scripts alpine:3.7 /bin/true
-docker cp scripts scripts:/app
-docker cp test_single_with_scripts_install.sh scripts:/app
+docker cp test/scripts scripts:/app
+docker cp test/test_single_with_scripts_install.sh scripts:/app
 
 TEST_FILES=$1/test/*
 for test_file in $TEST_FILES; do
