@@ -13,6 +13,8 @@ for test_file in $TEST_FILES; do
   if [ -d "$test_file" ]; then
     echo "$test_file is a directory, skipping"
     continue
+  elif [[ ${test_file: -3} == ".sh" ]]; then
+    echo "$test_file is shell script, skipping"
   fi
   echo "Testing $test_file"
 
