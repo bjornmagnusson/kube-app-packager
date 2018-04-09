@@ -44,6 +44,20 @@ for test_file in $TEST_FILES; do
     echo "Test failed for $test_file"
     exit 1
   fi
-  rm -f $1/$APP_PACKAGE
+
+  mkdir $1/$APP_PACKAGE_CONTAINER
+  tar zxvf $1/$APP_PACKAGE -C $1/$APP_PACKAGE_CONTAINER
+  SCRIPTS=$(docker inspect --format="{{range .Config.Env}}{{println .}}{{end}}" $APP_PACKAGE_CONTAINER | grep SCRIPTS | cut -d= -f2)
+  SCRIPTS_ARR=$(echo "$SCRIPTS" | sed "s/,/ /g")
+  cd $1/$APP_PACKAGE_CONTAINER
+  for SCRIPT in $SCRIPTS_ARR; do
+    echo "Validating $SCRIPT exist in package"
+    ls $SCRIPT
+    if [[ $? != "0" ]]; then
+      echo "Test failed for $test_file, failed to find $SCRIPT"
+      exit 1
+    fi
+  done
+  rm -f $1/$APP_PACKAGE $1/$APP_PACKAGE_CONTAINER
   docker rm app
 done
