@@ -22,7 +22,7 @@ if [[ $UNTAG_REPOSITORIES_ARR != "" ]]; then
     DOCKER_IMAGE_UNTAGGED=$DOCKER_IMAGE
     for UNTAG_REPOSITORY in $UNTAG_REPOSITORIES_ARR; do
       if [[ $DOCKER_IMAGE == $UNTAG_REPOSITORY* ]]; then
-        echo "Untagging docker image from $UNTAG_REPOSITORY"
+        echo "Untagging docker image $DOCKER_IMAGE from $UNTAG_REPOSITORY"
         OFFSET=$((${#UNTAG_REPOSITORY}+1))
         LENGTH=$((${#DOCKER_IMAGE}-$OFFSET))
         DOCKER_IMAGE_UNTAGGED=${DOCKER_IMAGE:OFFSET:LENGTH}
