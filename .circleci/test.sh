@@ -79,8 +79,8 @@ for test_file in $TEST_FILES; do
   docker load --input images.tar
   for UNTAG_REPOSITORY in $UNTAG_REPOSITORIES_ARR; do
     echo "Validating repository $UNTAG_REPOSITORY has been untagged"
-    docker images | grep $UNTAG_REPOSITORY
-    if [[ $? != "0" ]]; then
+    DOCKER_IMAGES_UNTAG=$(docker images | grep $UNTAG_REPOSITORY)
+    if [[ $DOCKER_IMAGES_UNTAG != "" ]]; then
       echo "Test failed for $test_file, failed to untag $UNTAG_REPOSITORY images"
       exit 1
     fi
