@@ -15,7 +15,23 @@ for DOCKER_IMAGE in $DOCKER_IMAGES_ARR; do
   echo "Fetching Docker image $DOCKER_IMAGE"
   docker pull $DOCKER_IMAGE
 done
-docker save --output $DOCKER_IMAGES_TAR $DOCKER_IMAGES_ARR
+DOCKER_IMAGES_UNTAGGED=""
+UNTAG_REPOSITORIES_ARR=$(echo "$UNTAG_REPOSITORIES" | sed "s/,/ /g")
+if [[ $UNTAG_REPOSITORIES_ARR != "" ]]; then
+  for DOCKER_IMAGE in $DOCKER_IMAGES_ARR; do
+    echo "Untagging docker image $DOCKER_IMAGE"
+    DOCKER_IMAGE_UNTAGGED=$DOCKER_IMAGE
+    for UNTAG_REPOSITORY in $UNTAG_REPOSITORIES_ARR; do
+      if [[ $DOCKER_IMAGE == $UNTAG_REPOSITORY* ]]; then
+        echo "Untagging docker image from $UNTAG_REPOSITORY"
+      fi
+    done
+    DOCKER_IMAGES_UNTAGGED="$DOCKER_IMAGES_UNTAGGED $DOCKER_IMAGE_UNTAGGED"
+  done
+else
+  DOCKER_IMAGES_UNTAGGED=$DOCKER_IMAGES_ARR
+fi
+docker save --output $DOCKER_IMAGES_TAR $DOCKER_IMAGES_UNTAGGED
 if [[ ! -f $DOCKER_IMAGES_TAR ]]; then
   echo "Failed to save $DOCKER_IMAGES to $DOCKER_IMAGES_TAR"
   exit 1
