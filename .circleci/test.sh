@@ -92,5 +92,4 @@ for test_file in $TEST_FILES; do
   echo "Cleaning up"
   rm -rf $1/$APP_PACKAGE $1/$APP_PACKAGE_CONTAINER
   docker rm app
-  docker image prune --all -f
 done
