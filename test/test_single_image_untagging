@@ -4,4 +4,4 @@ HELM_CHART_NAME=mariadb
 HELM_CHART_VERSION=2.1.17
 APP_VERSION=0.0.1-SNAPSHOT
 APP_NAME=mariadb
-UNTAG_REPOSITORIES=gcr.io,k8s.gcr.io
+UNTAG_REPOSITORIES=gcr.io/google_containers,k8s.gcr.io
