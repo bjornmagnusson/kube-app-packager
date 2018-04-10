@@ -1,4 +1,4 @@
-DOCKER_IMAGES=gcr.io/google_containers/etcd-amd64:3.1.12,alpine:3.7,k8s.gcr.io/google_containers/etcd-amd64:3.1.12
+DOCKER_IMAGES=gcr.io/google_containers/etcd-amd64:3.1.12,alpine:3.7,k8s.gcr.io/etcd-amd64:3.1.12
 HELM_CHART_REPOSITORY=stable
 HELM_CHART_NAME=mariadb
 HELM_CHART_VERSION=2.1.17
