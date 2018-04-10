@@ -78,6 +78,12 @@ for test_file in $TEST_FILES; do
   UNTAG_REPOSITORIES_ARR=$(echo "$UNTAG_REPOSITORIES" | sed "s/,/ /g")
   if [[ $UNTAG_REPOSITORIES_ARR != "" ]]; then
     docker image prune --all -f
+    DOCKER_IMAGES=$(docker inspect --format="{{range .Config.Env}}{{println .}}{{end}}" $APP_PACKAGE_CONTAINER | grep DOCKER_IMAGES | cut -d= -f2)
+    DOCKER_IMAGES_ARR=$(echo "$DOCKER_IMAGES" | sed "s/,/ /g")
+    for DOCKER_IMAGE in $DOCKER_IMAGES_ARR; do
+      echo "Deleting Docker image $DOCKER_IMAGE"
+      docker rmi -f $DOCKER_IMAGE
+    done
   fi
   docker load --input images.tar
   for UNTAG_REPOSITORY in $UNTAG_REPOSITORIES_ARR; do
