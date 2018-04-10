@@ -62,6 +62,7 @@ for test_file in $TEST_FILES; do
   echo "Unpacking package into $1/$APP_PACKAGE_CONTAINER"
   tar zxvf $1/$APP_PACKAGE -C $1/$APP_PACKAGE_CONTAINER
   cd $1/$APP_PACKAGE_CONTAINER
+
   SCRIPTS=$(docker inspect --format="{{range .Config.Env}}{{println .}}{{end}}" $APP_PACKAGE_CONTAINER | grep SCRIPTS | cut -d= -f2)
   SCRIPTS_ARR=$(echo "$SCRIPTS" | sed "s/,/ /g")
   for SCRIPT in $SCRIPTS_ARR; do
@@ -69,6 +70,21 @@ for test_file in $TEST_FILES; do
     ls $SCRIPT
     if [[ $? != "0" ]]; then
       echo "Test failed for $test_file, failed to find $SCRIPT"
+      exit 1
+    fi
+  done
+
+  UNTAG_REPOSITORIES=$(docker inspect --format="{{range .Config.Env}}{{println .}}{{end}}" $APP_PACKAGE_CONTAINER | grep UNTAG_REPOSITORIES | cut -d= -f2)
+  UNTAG_REPOSITORIES_ARR=$(echo "$UNTAG_REPOSITORIES" | sed "s/,/ /g")
+  if [[ $UNTAG_REPOSITORIES_ARR != "" ]]; then
+    docker image prune --all -f
+  fi
+  docker load --input images.tar
+  for UNTAG_REPOSITORY in $UNTAG_REPOSITORIES_ARR; do
+    echo "Validating repository $UNTAG_REPOSITORY has been untagged"
+    docker images | grep $UNTAG_REPOSITORY
+    if [[ $? != "1" ]]; then
+      echo "Test failed for $test_file, failed to untag $UNTAG_REPOSITORY images"
       exit 1
     fi
   done
