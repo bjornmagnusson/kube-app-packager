@@ -76,7 +76,9 @@ for test_file in $TEST_FILES; do
 
   UNTAG_REPOSITORIES=$(docker inspect --format="{{range .Config.Env}}{{println .}}{{end}}" $APP_PACKAGE_CONTAINER | grep UNTAG_REPOSITORIES | cut -d= -f2)
   UNTAG_REPOSITORIES_ARR=$(echo "$UNTAG_REPOSITORIES" | sed "s/,/ /g")
-  docker image prune --all -f
+  if [[ $UNTAG_REPOSITORIES_ARR != "" ]]; then
+    docker image prune --all -f
+  done
   docker load --input images.tar
   for UNTAG_REPOSITORY in $UNTAG_REPOSITORIES_ARR; do
     echo "Validating repository $UNTAG_REPOSITORY has been untagged"
