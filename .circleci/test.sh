@@ -77,7 +77,6 @@ for test_file in $TEST_FILES; do
   UNTAG_REPOSITORIES=$(docker inspect --format="{{range .Config.Env}}{{println .}}{{end}}" $APP_PACKAGE_CONTAINER | grep UNTAG_REPOSITORIES | cut -d= -f2)
   UNTAG_REPOSITORIES_ARR=$(echo "$UNTAG_REPOSITORIES" | sed "s/,/ /g")
   if [[ $UNTAG_REPOSITORIES_ARR != "" ]]; then
-    docker image prune --all -f
     DOCKER_IMAGES=$(docker inspect --format="{{range .Config.Env}}{{println .}}{{end}}" $APP_PACKAGE_CONTAINER | grep DOCKER_IMAGES | cut -d= -f2)
     DOCKER_IMAGES_ARR=$(echo "$DOCKER_IMAGES" | sed "s/,/ /g")
     for DOCKER_IMAGE in $DOCKER_IMAGES_ARR; do
