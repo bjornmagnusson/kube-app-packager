@@ -26,6 +26,7 @@ if [[ $UNTAG_REPOSITORIES_ARR != "" ]]; then
         OFFSET=$((${#UNTAG_REPOSITORY}+1))
         LENGTH=$((${#DOCKER_IMAGE}-$OFFSET))
         DOCKER_IMAGE_UNTAGGED=${DOCKER_IMAGE:OFFSET:LENGTH}
+        docker tag $DOCKER_IMAGE $DOCKER_IMAGE_UNTAGGED
         echo "Untagged into $DOCKER_IMAGE_UNTAGGED"
       fi
     done
@@ -36,7 +37,7 @@ else
 fi
 docker save --output $DOCKER_IMAGES_TAR $DOCKER_IMAGES_UNTAGGED
 if [[ ! -f $DOCKER_IMAGES_TAR ]]; then
-  echo "Failed to save $DOCKER_IMAGES to $DOCKER_IMAGES_TAR"
+  echo "Failed to save $DOCKER_IMAGES_UNTAGGED to $DOCKER_IMAGES_TAR"
   exit 1
 fi
 
