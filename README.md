@@ -19,6 +19,7 @@ By default, only stable Helm repository is enabled.
 - HELM_CHART_VERSION: Helm Chart version
 - DOCKER_IMAGES: Docker images used in Helm Chart (comma-separated list)
 - SCRIPTS: Scripts to be included (comma-separated list)
+- UNTAG_REPOSITORIES: Repositories to be untagged
 - APP_NAME: Name of application to be built
 - APP_VERSION: Version of application to be built
 
@@ -43,6 +44,7 @@ services:
       APP_VERSION: app-version
       APP_NAME: app-name
       SCRIPTS: script1,script2
+      UNTAG_REPOSITORIES: repo1,repo2
       DOCKER_HOST: tcp://docker:2375
     depends_on:
       - docker
