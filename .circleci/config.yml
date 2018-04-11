@@ -22,6 +22,7 @@ jobs:
       - run:
           name: Test examples
           command: |
+            docker-compose -f docker-compose.test.yml build
             .circleci/test.sh $PWD ci
       - deploy:
           name: Push Docker image to Docker Hub

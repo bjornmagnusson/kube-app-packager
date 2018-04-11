@@ -1,0 +1,3 @@
+FROM bjornmagnusson/kube-app-packager
+
+RUN helm repo add bjornmagnusson https://raw.githubusercontent.com/bjornmagnusson/charts/master/

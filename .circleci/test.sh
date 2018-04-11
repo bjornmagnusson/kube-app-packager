@@ -48,7 +48,7 @@ for test_file in $TEST_FILES; do
       --volumes-from app \
       --env DOCKER_HOST=${DIND_HOST} \
       --name $APP_PACKAGE_CONTAINER \
-    bjornmagnusson/kube-app-packager
+    bjornmagnusson/kube-app-packager-test
   else
     docker run \
       --volumes-from configs \
@@ -58,7 +58,7 @@ for test_file in $TEST_FILES; do
       --env DOCKER_CERT_PATH=/cfg \
       --volumes-from app \
       --name $APP_PACKAGE_CONTAINER \
-    bjornmagnusson/kube-app-packager
+    bjornmagnusson/kube-app-packager-test
   fi
 
   if [[ $? != "0" ]]; then
