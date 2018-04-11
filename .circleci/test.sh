@@ -1,10 +1,12 @@
 #!/bin/bash
+CWD=${1:-.}
+
 docker create -v /cfg --name configs alpine:3.7 /bin/true
 docker cp ${DOCKER_CERT_PATH}/ca.pem configs:/cfg
 docker cp ${DOCKER_CERT_PATH}/cert.pem configs:/cfg
 docker cp ${DOCKER_CERT_PATH}/key.pem configs:/cfg
 
-TEST_FILES=$1/test/*
+TEST_FILES=$CWD/test/*
 for test_file in $TEST_FILES; do
   echo "Found test file $test_file"
 done
@@ -26,8 +28,8 @@ for test_file in $TEST_FILES; do
 
   docker create -v /app --name app alpine:3.7 /bin/true
   if [[ ${test_file: -12} == "with_scripts" ]]; then
-    docker cp $1/test/scripts app:/app
-    docker cp $1/test/test_single_with_scripts_install.sh app:/app
+    docker cp $CWD/test/scripts app:/app
+    docker cp $CWD/test/test_single_with_scripts_install.sh app:/app
   fi
   APP_PACKAGE_CONTAINER=$(basename $test_file)
   docker run \
@@ -48,20 +50,20 @@ for test_file in $TEST_FILES; do
   APP_NAME=$(docker inspect --format="{{range .Config.Env}}{{println .}}{{end}}" $APP_PACKAGE_CONTAINER | grep APP_NAME | cut -d= -f2)
   APP_VERSION=$(docker inspect --format="{{range .Config.Env}}{{println .}}{{end}}" $APP_PACKAGE_CONTAINER | grep APP_VERSION | cut -d= -f2)
   APP_PACKAGE="$APP_NAME-$APP_VERSION.tgz"
-  docker cp app:/app/$APP_PACKAGE $1
+  docker cp app:/app/$APP_PACKAGE $CWD
 
-  ls $1/$APP_PACKAGE
+  ls $CWD/$APP_PACKAGE
   if [[ $? != "0" ]]; then
     echo "Test failed for $test_file"
     exit 1
   fi
 
   echo "Validating package content"
-  tar tf $1/$APP_PACKAGE
-  mkdir $1/$APP_PACKAGE_CONTAINER
-  echo "Unpacking package into $1/$APP_PACKAGE_CONTAINER"
-  tar zxvf $1/$APP_PACKAGE -C $1/$APP_PACKAGE_CONTAINER
-  cd $1/$APP_PACKAGE_CONTAINER
+  tar tf $CWD/$APP_PACKAGE
+  mkdir $CWD/$APP_PACKAGE_CONTAINER
+  echo "Unpacking package into $CWD/$APP_PACKAGE_CONTAINER"
+  tar zxvf $1/$APP_PACKAGE -C $CWD/$APP_PACKAGE_CONTAINER
+  cd $CWD/$APP_PACKAGE_CONTAINER
 
   SCRIPTS=$(docker inspect --format="{{range .Config.Env}}{{println .}}{{end}}" $APP_PACKAGE_CONTAINER | grep SCRIPTS | cut -d= -f2)
   SCRIPTS_ARR=$(echo "$SCRIPTS" | sed "s/,/ /g")
@@ -95,6 +97,6 @@ for test_file in $TEST_FILES; do
   done
 
   echo "Cleaning up"
-  rm -rf $1/$APP_PACKAGE $1/$APP_PACKAGE_CONTAINER
+  rm -rf $CWD/$APP_PACKAGE $CWD/$APP_PACKAGE_CONTAINER
   docker rm app
 done
