@@ -51,13 +51,15 @@ if [[ $? != "0" ]]; then
 fi
 
 # Scripts as array
-echo "Collecting scripts ($SCRIPTS)"
 SCRIPTS_ARR=$(echo "$SCRIPTS" | sed "s/,/ /g")
-SCRIPTS=""
-for SCRIPT in $SCRIPTS_ARR; do
-  SCRIPTS="$SCRIPTS $SCRIPT"
-  cp -r /app/$SCRIPT .
-done
+if [[ $SCRIPTS_ARR != "" ]]; then
+  echo "Collecting scripts ($SCRIPTS)"
+  SCRIPTS=""
+  for SCRIPT in $SCRIPTS_ARR; do
+    SCRIPTS="$SCRIPTS $SCRIPT"
+    cp -r /app/$SCRIPT .
+  done
+fi
 
 # package application (docker images + helm chart = app tarball)
 APPLICATION_NAME=$APP_NAME
