@@ -1,0 +1,8 @@
+version: '2.1'
+
+services:
+  packager:
+    image: bjornmagnusson/kube-app-packager-test:${TAG:-latest}
+    build:
+      context: .
+      dockerfile: Dockerfile.test      
